@@ -6,3 +6,6 @@ export { useLocalStorage } from "./useLocalStorage";
 
 // Search hooks
 export { useSearch } from "./useSearch";
+
+// Product hooks
+export { useProducts } from "./useProducts";
