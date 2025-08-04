@@ -1,5 +1,5 @@
 import React from "react";
-import { Notification } from "../models";
+import { Notification } from "../../models";
 
 interface NotificationToastProps {
   notifications: Notification[];
