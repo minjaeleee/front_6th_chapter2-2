@@ -1,16 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
-import { CartItem, Coupon, Product } from "../types";
-
-interface ProductWithUI extends Product {
-  description?: string;
-  isRecommended?: boolean;
-}
-
-interface Notification {
-  id: string;
-  message: string;
-  type: "error" | "success" | "warning";
-}
+import {
+  CartItem,
+  Coupon,
+  Product,
+  ProductWithUI,
+  Notification,
+} from "./models";
 
 // 초기 데이터
 const initialProducts: ProductWithUI[] = [
