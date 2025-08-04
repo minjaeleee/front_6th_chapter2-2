@@ -3,6 +3,4 @@
 export { Header } from "./Header";
 export { ProductList } from "./ProductList";
 export { CartSidebar } from "./CartSidebar";
-
-// 곧 생성 예정:
-// export { AdminPanel } from './Admin';
+export { AdminPanel } from "./AdminPanel";
