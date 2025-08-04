@@ -16,6 +16,7 @@ import {
   hasBulkPurchase,
   calculateRemainingStock,
 } from "./utils";
+import { useNotifications, useLocalStorage, useSearch } from "./hooks";
 
 // 초기 데이터
 const initialProducts: ProductWithUI[] = [
@@ -106,14 +107,15 @@ const App = () => {
 
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { notifications, addNotification, removeNotification } =
+    useNotifications();
   const [showCouponForm, setShowCouponForm] = useState(false);
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
     "products"
   );
   const [showProductForm, setShowProductForm] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const { searchTerm, setSearchTerm, debouncedSearchTerm, filteredProducts } =
+    useSearch(products);
 
   // Admin
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
@@ -202,18 +204,6 @@ const App = () => {
     return calculateRemainingStock(product.stock, cartItem?.quantity || 0);
   };
 
-  const addNotification = useCallback(
-    (message: string, type: "error" | "success" | "warning" = "success") => {
-      const id = Date.now().toString();
-      setNotifications((prev) => [...prev, { id, message, type }]);
-
-      setTimeout(() => {
-        setNotifications((prev) => prev.filter((n) => n.id !== id));
-      }, 3000);
-    },
-    []
-  );
-
   const [totalItemCount, setTotalItemCount] = useState(0);
 
   useEffect(() => {
@@ -236,13 +226,6 @@ const App = () => {
       localStorage.removeItem("cart");
     }
   }, [cart]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
 
   const addToCart = useCallback(
     (product: ProductWithUI) => {
@@ -448,19 +431,6 @@ const App = () => {
 
   const totals = calculateCartTotal();
 
-  const filteredProducts = debouncedSearchTerm
-    ? products.filter(
-        (product) =>
-          product.name
-            .toLowerCase()
-            .includes(debouncedSearchTerm.toLowerCase()) ||
-          (product.description &&
-            product.description
-              .toLowerCase()
-              .includes(debouncedSearchTerm.toLowerCase()))
-      )
-    : products;
-
   return (
     <div className="min-h-screen bg-gray-50">
       {notifications.length > 0 && (
@@ -478,11 +448,7 @@ const App = () => {
             >
               <span className="mr-2">{notif.message}</span>
               <button
-                onClick={() =>
-                  setNotifications((prev) =>
-                    prev.filter((n) => n.id !== notif.id)
-                  )
-                }
+                onClick={() => removeNotification(notif.id)}
                 className="text-white hover:text-gray-200"
               >
                 <svg
