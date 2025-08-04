@@ -22,6 +22,7 @@ import {
   useSearch,
   useProducts,
   useCart,
+  useCoupons,
 } from "./hooks";
 import {
   NotificationToast,
@@ -32,21 +33,6 @@ import {
   CartSidebar,
   AdminPanel,
 } from "./components";
-
-const initialCoupons: Coupon[] = [
-  {
-    name: "5000원 할인",
-    code: "AMOUNT5000",
-    discountType: "amount",
-    discountValue: 5000,
-  },
-  {
-    name: "10% 할인",
-    code: "PERCENT10",
-    discountType: "percentage",
-    discountValue: 10,
-  },
-];
 
 const App = () => {
   const {
@@ -80,35 +66,29 @@ const App = () => {
     completeOrder: completeOrderBase,
   } = useCart();
 
-  const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    const saved = localStorage.getItem("coupons");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return initialCoupons;
-      }
-    }
-    return initialCoupons;
-  });
+  // useCoupons 훅 사용
+  const {
+    coupons,
+    showCouponForm,
+    couponForm,
+    addCoupon: addCouponBase,
+    deleteCoupon: deleteCouponBase,
+    handleCouponSubmit: handleCouponSubmitBase,
+    resetCouponForm,
+    setCoupons,
+    setShowCouponForm,
+    setCouponForm,
+  } = useCoupons();
 
   const [isAdmin, setIsAdmin] = useState(false);
   const { notifications, addNotification, removeNotification } =
     useNotifications();
-  const [showCouponForm, setShowCouponForm] = useState(false);
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
     "products"
   );
 
   const { searchTerm, setSearchTerm, debouncedSearchTerm, filteredProducts } =
     useSearch(products);
-
-  const [couponForm, setCouponForm] = useState({
-    name: "",
-    code: "",
-    discountType: "amount" as "amount" | "percentage",
-    discountValue: 0,
-  });
 
   const formatPrice = (price: number, productId?: string): string => {
     if (productId) {
@@ -129,11 +109,7 @@ const App = () => {
     localStorage.setItem("products", JSON.stringify(products));
   }, [products]);
 
-  useEffect(() => {
-    localStorage.setItem("coupons", JSON.stringify(coupons));
-  }, [coupons]);
-
-  // useCart의 함수들을 addNotification과 함께 사용하도록 래핑
+  // useCoupons의 함수들을 addNotification과 함께 사용하도록 래핑
   const addToCart = useCallback(
     (product: ProductWithUI) => {
       addToCartBase(product, addNotification);
@@ -161,26 +137,21 @@ const App = () => {
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {
-      const existingCoupon = coupons.find((c) => c.code === newCoupon.code);
-      if (existingCoupon) {
-        addNotification("이미 존재하는 쿠폰 코드입니다.", "error");
-        return;
-      }
-      setCoupons((prev) => [...prev, newCoupon]);
-      addNotification("쿠폰이 추가되었습니다.", "success");
+      addCouponBase(newCoupon, addNotification);
     },
-    [coupons, addNotification]
+    [addCouponBase, addNotification]
   );
 
   const deleteCoupon = useCallback(
     (couponCode: string) => {
-      setCoupons((prev) => prev.filter((c) => c.code !== couponCode));
-      if (selectedCoupon?.code === couponCode) {
-        setSelectedCoupon(null);
-      }
-      addNotification("쿠폰이 삭제되었습니다.", "success");
+      deleteCouponBase(
+        couponCode,
+        selectedCoupon,
+        setSelectedCoupon,
+        addNotification
+      );
     },
-    [selectedCoupon, addNotification]
+    [deleteCouponBase, selectedCoupon, setSelectedCoupon, addNotification]
   );
 
   const handleProductSubmit = (e: React.FormEvent) => {
@@ -205,17 +176,12 @@ const App = () => {
     setShowProductForm(false);
   };
 
-  const handleCouponSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addCoupon(couponForm);
-    setCouponForm({
-      name: "",
-      code: "",
-      discountType: "amount",
-      discountValue: 0,
-    });
-    setShowCouponForm(false);
-  };
+  const handleCouponSubmit = useCallback(
+    (e: React.FormEvent) => {
+      handleCouponSubmitBase(e, addNotification);
+    },
+    [handleCouponSubmitBase, addNotification]
+  );
 
   const totals = calculateCartTotal();
 
@@ -248,7 +214,13 @@ const App = () => {
             setShowProductForm={setShowProductForm}
             setProductForm={setProductForm}
             coupons={coupons}
-            setCoupons={setCoupons}
+            showCouponForm={showCouponForm}
+            couponForm={couponForm}
+            addCoupon={addCoupon}
+            deleteCoupon={deleteCoupon}
+            handleCouponSubmit={handleCouponSubmit}
+            setShowCouponForm={setShowCouponForm}
+            setCouponForm={setCouponForm}
             formatPrice={formatPrice}
             addNotification={addNotification}
           />
