@@ -6,6 +6,16 @@ import {
   ProductWithUI,
   Notification,
 } from "./models";
+import {
+  calculateProductDiscount,
+  applyBulkDiscount,
+  calculateItemPrice,
+  formatUserPrice,
+  formatAdminPrice,
+  SOLD_OUT_TEXT,
+  hasBulkPurchase,
+  calculateRemainingStock,
+} from "./utils";
 
 // 초기 데이터
 const initialProducts: ProductWithUI[] = [
@@ -126,41 +136,33 @@ const App = () => {
     if (productId) {
       const product = products.find((p) => p.id === productId);
       if (product && getRemainingStock(product) <= 0) {
-        return "SOLD OUT";
+        return SOLD_OUT_TEXT;
       }
     }
 
     if (isAdmin) {
-      return `${price.toLocaleString()}원`;
+      return formatAdminPrice(price);
     }
 
-    return `₩${price.toLocaleString()}`;
+    return formatUserPrice(price);
   };
 
   const getMaxApplicableDiscount = (item: CartItem): number => {
     const { discounts } = item.product;
     const { quantity } = item;
 
-    const baseDiscount = discounts.reduce((maxDiscount, discount) => {
-      return quantity >= discount.quantity && discount.rate > maxDiscount
-        ? discount.rate
-        : maxDiscount;
-    }, 0);
+    const baseDiscount = calculateProductDiscount(discounts, quantity);
+    const hasBulkPurchaseFlag = hasBulkPurchase(cart);
 
-    const hasBulkPurchase = cart.some((cartItem) => cartItem.quantity >= 10);
-    if (hasBulkPurchase) {
-      return Math.min(baseDiscount + 0.05, 0.5); // 대량 구매 시 추가 5% 할인
-    }
-
-    return baseDiscount;
+    return applyBulkDiscount(baseDiscount, hasBulkPurchaseFlag);
   };
 
   const calculateItemTotal = (item: CartItem): number => {
     const { price } = item.product;
     const { quantity } = item;
-    const discount = getMaxApplicableDiscount(item);
+    const discountRate = getMaxApplicableDiscount(item);
 
-    return Math.round(price * quantity * (1 - discount));
+    return calculateItemPrice(price, quantity, discountRate);
   };
 
   const calculateCartTotal = (): {
@@ -197,9 +199,7 @@ const App = () => {
 
   const getRemainingStock = (product: Product): number => {
     const cartItem = cart.find((item) => item.product.id === product.id);
-    const remaining = product.stock - (cartItem?.quantity || 0);
-
-    return remaining;
+    return calculateRemainingStock(product.stock, cartItem?.quantity || 0);
   };
 
   const addNotification = useCallback(
