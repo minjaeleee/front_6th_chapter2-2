@@ -12,3 +12,6 @@ export { useProducts } from "./useProducts";
 
 // Cart hooks
 export { useCart } from "./useCart";
+
+// Coupon hooks
+export { useCoupons } from "./useCoupons";

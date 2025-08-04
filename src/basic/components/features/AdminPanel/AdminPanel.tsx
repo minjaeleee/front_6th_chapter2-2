@@ -44,7 +44,23 @@ interface AdminPanelProps {
 
   // Coupon 관련
   coupons: Coupon[];
-  setCoupons: React.Dispatch<React.SetStateAction<Coupon[]>>;
+  showCouponForm: boolean;
+  couponForm: {
+    name: string;
+    code: string;
+    discountType: "amount" | "percentage";
+    discountValue: number;
+  };
+  addCoupon: (newCoupon: Coupon) => void;
+  deleteCoupon: (couponCode: string) => void;
+  handleCouponSubmit: (e: React.FormEvent) => void;
+  setShowCouponForm: (show: boolean) => void;
+  setCouponForm: (form: {
+    name: string;
+    code: string;
+    discountType: "amount" | "percentage";
+    discountValue: number;
+  }) => void;
 
   // 기타
   formatPrice: (price: number, productId?: string) => string;
@@ -67,35 +83,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   setShowProductForm,
   setProductForm,
   coupons,
-  setCoupons,
+  showCouponForm,
+  couponForm,
+  addCoupon,
+  deleteCoupon,
+  handleCouponSubmit,
+  setShowCouponForm,
+  setCouponForm,
   formatPrice,
   addNotification,
 }) => {
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
     "products"
   );
-  const [showCouponForm, setShowCouponForm] = useState(false);
-  const [couponForm, setCouponForm] = useState({
-    name: "",
-    code: "",
-    discountType: "amount" as "amount" | "percentage",
-    discountValue: 0,
-  });
-
-  const addCoupon = (newCoupon: Coupon) => {
-    const existingCoupon = coupons.find((c) => c.code === newCoupon.code);
-    if (existingCoupon) {
-      addNotification("이미 존재하는 쿠폰 코드입니다.", "error");
-      return;
-    }
-    setCoupons((prev) => [...prev, newCoupon]);
-    addNotification("쿠폰이 추가되었습니다.", "success");
-  };
-
-  const deleteCoupon = (couponCode: string) => {
-    setCoupons((prev) => prev.filter((c) => c.code !== couponCode));
-    addNotification("쿠폰이 삭제되었습니다.", "success");
-  };
 
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,18 +117,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     });
     setEditingProduct(null);
     setShowProductForm(false);
-  };
-
-  const handleCouponSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addCoupon(couponForm);
-    setCouponForm({
-      name: "",
-      code: "",
-      discountType: "amount",
-      discountValue: 0,
-    });
-    setShowCouponForm(false);
   };
 
   return (
