@@ -9,3 +9,6 @@ export { useSearch } from "./useSearch";
 
 // Product hooks
 export { useProducts } from "./useProducts";
+
+// Cart hooks
+export { useCart } from "./useCart";
