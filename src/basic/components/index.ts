@@ -1,4 +1,5 @@
-// UI Components
-export { NotificationToast } from "./NotificationToast";
-export { SearchInput } from "./SearchInput";
-export { ProductCard } from "./ProductCard";
+// UI Components (기본 재사용 단위)
+export * from "./ui";
+
+// Feature Components (기능별 중간 레벨)
+// export * from './features'; // 아직 생성 예정
