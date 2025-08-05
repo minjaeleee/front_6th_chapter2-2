@@ -1,17 +1,14 @@
-// Notification hooks
-export { useNotifications } from "./useNotifications";
+// Shared hooks (migrated to shared/hooks)
+export { useLocalStorage, useSearch } from "../shared/hooks";
 
-// LocalStorage hooks
-export { useLocalStorage } from "./useLocalStorage";
+// Product domain hooks (migrated to domain/product/hooks)
+export { useProducts } from "../domain/product/hooks";
 
-// Search hooks
-export { useSearch } from "./useSearch";
+// Cart domain hooks (migrated to domain/cart/hooks)
+export { useCart } from "../domain/cart/hooks";
 
-// Product hooks
-export { useProducts } from "./useProducts";
+// Coupon domain hooks (migrated to domain/coupon/hooks)
+export { useCoupons } from "../domain/coupon/hooks";
 
-// Cart hooks
-export { useCart } from "./useCart";
-
-// Coupon hooks
-export { useCoupons } from "./useCoupons";
+// Notification domain hooks (migrated to domain/notification/hooks)
+export { useNotifications } from "../domain/notification/hooks";

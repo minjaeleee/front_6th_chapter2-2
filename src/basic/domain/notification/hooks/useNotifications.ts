@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Notification } from "../models";
+import { Notification } from "../../../models";
 
 export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -20,9 +20,14 @@ export const useNotifications = () => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
+  const clearAllNotifications = useCallback(() => {
+    setNotifications([]);
+  }, []);
+
   return {
     notifications,
     addNotification,
     removeNotification,
+    clearAllNotifications,
   };
 };
