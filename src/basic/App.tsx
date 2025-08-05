@@ -16,14 +16,14 @@ import {
   hasBulkPurchase,
   calculateRemainingStock,
 } from "./utils";
-import {
-  useNotifications,
-  useLocalStorage,
-  useSearch,
-  useProducts,
-  useCart,
-  useCoupons,
-} from "./hooks";
+// Shared hooks
+import { useLocalStorage, useSearch } from "./shared/hooks";
+
+// Domain hooks
+import { useProducts } from "./domain/product/hooks";
+import { useCart } from "./domain/cart/hooks";
+import { useCoupons } from "./domain/coupon/hooks";
+import { useNotifications } from "./domain/notification/hooks";
 // Shared components
 import { Header, SearchInput } from "./shared/components";
 
