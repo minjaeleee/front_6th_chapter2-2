@@ -1,19 +1,3 @@
-import { Discount } from "../models";
-
-/**
- * 상품 할인율 계산 (순수 함수)
- */
-export const calculateProductDiscount = (
-  discounts: Discount[],
-  quantity: number
-): number => {
-  return discounts.reduce((maxDiscount, discount) => {
-    return quantity >= discount.quantity && discount.rate > maxDiscount
-      ? discount.rate
-      : maxDiscount;
-  }, 0);
-};
-
 /**
  * 대량 구매 할인 적용 (순수 함수)
  */
@@ -36,4 +20,13 @@ export const calculateItemPrice = (
   discountRate: number
 ): number => {
   return Math.round(price * quantity * (1 - discountRate));
+};
+
+/**
+ * 대량 구매 여부 확인 (순수 함수)
+ */
+export const hasBulkPurchase = (
+  cartItems: Array<{ quantity: number }>
+): boolean => {
+  return cartItems.some((item) => item.quantity >= 10);
 };
