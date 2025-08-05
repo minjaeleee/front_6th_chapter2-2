@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { Coupon } from "../../../models";
+import { Coupon } from "../models";
 import { initialCoupons } from "../../../constants";
 
 export const useCoupons = () => {

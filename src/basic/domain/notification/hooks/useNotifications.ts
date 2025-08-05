@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Notification } from "../../../models";
+import { Notification } from "../models";
 
 export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);

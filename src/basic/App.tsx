@@ -1,21 +1,26 @@
 import { useState, useCallback, useEffect } from "react";
+// Domain models
+import { Product, ProductWithUI } from "./domain/product/models";
+import { CartItem } from "./domain/cart/models";
+import { Coupon } from "./domain/coupon/models";
+import { Notification } from "./domain/notification/models";
+// Shared utilities
 import {
-  CartItem,
-  Coupon,
-  Product,
-  ProductWithUI,
-  Notification,
-} from "./models";
-import {
-  calculateProductDiscount,
-  applyBulkDiscount,
-  calculateItemPrice,
   formatUserPrice,
   formatAdminPrice,
   SOLD_OUT_TEXT,
-  hasBulkPurchase,
+} from "./shared/utils";
+
+// Domain utilities
+import {
+  calculateProductDiscount,
   calculateRemainingStock,
-} from "./utils";
+} from "./domain/product/utils";
+import {
+  applyBulkDiscount,
+  calculateItemPrice,
+  hasBulkPurchase,
+} from "./domain/cart/utils";
 // Shared hooks
 import { useLocalStorage, useSearch } from "./shared/hooks";
 
