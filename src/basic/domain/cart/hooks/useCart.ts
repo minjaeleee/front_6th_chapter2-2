@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
-import { CartItem, ProductWithUI, Product, Coupon } from "../models";
+import { CartItem, ProductWithUI, Product, Coupon } from "../../../models";
 import {
   calculateProductDiscount,
   applyBulkDiscount,
   calculateItemPrice,
   calculateRemainingStock,
   hasBulkPurchase,
-} from "../utils";
+} from "../../../utils";
 
 export const useCart = () => {
   const [cart, setCart] = useState<CartItem[]>(() => {

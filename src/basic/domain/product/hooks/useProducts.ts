@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { ProductWithUI } from "../models";
-import { useLocalStorage } from "./useLocalStorage";
-import { initialProducts } from "../constants";
+import { useLocalStorage } from "../../../shared/hooks";
+import { initialProducts } from "../../../constants";
 
 export const useProducts = () => {
   const [products, setProducts] = useLocalStorage("products", initialProducts);
@@ -19,47 +19,49 @@ export const useProducts = () => {
 
   // 상품 추가
   const addProduct = useCallback(
-    (product: {
-      name: string;
-      price: number;
-      stock: number;
-      description: string;
-      discounts: Array<{ quantity: number; rate: number }>;
-    }) => {
-      const newProduct: ProductWithUI = {
+    (newProduct: Omit<ProductWithUI, "id">) => {
+      const product: ProductWithUI = {
+        ...newProduct,
         id: Date.now().toString(),
-        ...product,
       };
-      setProducts((prev) => [...prev, newProduct]);
+      setProducts((prev) => [...prev, product]);
+      setShowProductForm(false);
+      setProductForm({
+        name: "",
+        price: 0,
+        stock: 0,
+        description: "",
+        discounts: [],
+      });
     },
     [setProducts]
   );
 
   // 상품 수정
   const updateProduct = useCallback(
-    (
-      id: string,
-      updatedProduct: {
-        name: string;
-        price: number;
-        stock: number;
-        description: string;
-        discounts: Array<{ quantity: number; rate: number }>;
-      }
-    ) => {
+    (productId: string, updates: Partial<ProductWithUI>) => {
       setProducts((prev) =>
         prev.map((product) =>
-          product.id === id ? { ...product, ...updatedProduct } : product
+          product.id === productId ? { ...product, ...updates } : product
         )
       );
+      setEditingProduct(null);
+      setShowProductForm(false);
+      setProductForm({
+        name: "",
+        price: 0,
+        stock: 0,
+        description: "",
+        discounts: [],
+      });
     },
     [setProducts]
   );
 
   // 상품 삭제
   const deleteProduct = useCallback(
-    (id: string) => {
-      setProducts((prev) => prev.filter((product) => product.id !== id));
+    (productId: string) => {
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
     },
     [setProducts]
   );
@@ -77,6 +79,35 @@ export const useProducts = () => {
     setShowProductForm(true);
   }, []);
 
+  // 할인 추가
+  const addDiscount = useCallback(() => {
+    setProductForm((prev) => ({
+      ...prev,
+      discounts: [...prev.discounts, { quantity: 0, rate: 0 }],
+    }));
+  }, []);
+
+  // 할인 제거
+  const removeDiscount = useCallback((index: number) => {
+    setProductForm((prev) => ({
+      ...prev,
+      discounts: prev.discounts.filter((_, i) => i !== index),
+    }));
+  }, []);
+
+  // 할인 업데이트
+  const updateDiscount = useCallback(
+    (index: number, field: string, value: number) => {
+      setProductForm((prev) => ({
+        ...prev,
+        discounts: prev.discounts.map((discount, i) =>
+          i === index ? { ...discount, [field]: value } : discount
+        ),
+      }));
+    },
+    []
+  );
+
   // 상품 폼 리셋
   const resetProductForm = useCallback(() => {
     setProductForm({
@@ -91,24 +122,20 @@ export const useProducts = () => {
   }, []);
 
   return {
-    // 상품 데이터
     products,
-
-    // 폼 상태
     editingProduct,
     showProductForm,
     productForm,
-
-    // 액션 함수들
+    setEditingProduct,
+    setShowProductForm,
+    setProductForm,
     addProduct,
     updateProduct,
     deleteProduct,
     startEditProduct,
     resetProductForm,
-
-    // 상태 설정 함수들
-    setEditingProduct,
-    setShowProductForm,
-    setProductForm,
+    addDiscount,
+    removeDiscount,
+    updateDiscount,
   };
 };
