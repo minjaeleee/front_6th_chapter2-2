@@ -1,5 +1,6 @@
 import React from "react";
-import { CartItem, Coupon } from "../../../models";
+import { CartItem } from "../../models";
+import { Coupon } from "../../../coupon/models";
 
 interface CartSidebarProps {
   cart: CartItem[];

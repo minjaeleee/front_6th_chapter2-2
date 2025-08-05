@@ -1,5 +1,5 @@
 import React from "react";
-import { SearchInput } from "../../ui";
+import { SearchInput } from "../../form";
 
 interface HeaderProps {
   isAdmin: boolean;

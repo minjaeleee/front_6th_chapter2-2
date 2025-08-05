@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { ProductWithUI, Coupon } from "../../../models";
+import { ProductWithUI } from "../../../domain/product/models";
+import { Coupon } from "../../../domain/coupon/models";
 
 interface AdminPanelProps {
   // Product 관련
