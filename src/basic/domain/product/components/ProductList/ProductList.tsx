@@ -1,6 +1,6 @@
 import React from "react";
-import { ProductWithUI, Product } from "../../../models";
-import { ProductCard } from "../../ui";
+import { ProductWithUI, Product } from "../../models";
+import { ProductCard } from "../ProductCard";
 
 interface ProductListProps {
   products: ProductWithUI[];
