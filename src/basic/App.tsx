@@ -24,15 +24,16 @@ import {
   useCart,
   useCoupons,
 } from "./hooks";
-import {
-  NotificationToast,
-  SearchInput,
-  ProductCard,
-  Header,
-  ProductList,
-  CartSidebar,
-  AdminPanel,
-} from "./components";
+// Shared components
+import { Header, SearchInput } from "./shared/components";
+
+// Domain components
+import { ProductCard, ProductList } from "./domain/product/components";
+import { CartSidebar } from "./domain/cart/components";
+import { NotificationToast } from "./domain/notification/components";
+
+// Feature components
+import { AdminPanel } from "./features/admin";
 
 const App = () => {
   const {
