@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { ProductWithUI } from "../models";
 import { useLocalStorage } from "../../../shared/hooks";
-import { initialProducts } from "../../../constants";
+import { initialProducts } from "../constants";
 
 export const useProducts = () => {
   const [products, setProducts] = useLocalStorage("products", initialProducts);
