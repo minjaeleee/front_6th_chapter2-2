@@ -3,4 +3,8 @@ export {
   applyBulkDiscount,
   calculateItemPrice,
   hasBulkPurchase,
+  getMaxApplicableDiscount,
+  getRemainingStock,
+  calculateItemTotal,
+  calculateCartTotal,
 } from "./calculations";
