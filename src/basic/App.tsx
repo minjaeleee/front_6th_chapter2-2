@@ -1,8 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 // models
-import { ProductWithUI } from "./domain/product/models";
 import { Coupon } from "./domain/coupon/models";
-// 더 이상 직접 사용하지 않음 - useFormatPrice hook에서 사용
 
 // Shared hooks
 import { useSearch, useFormatPrice } from "./shared/hooks";
@@ -37,7 +35,10 @@ const App = () => {
     handleProductSubmit,
   } = useProducts();
 
-  // useCart 훅 사용
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { notifications, addNotification, removeNotification } =
+    useNotifications();
+
   const {
     cart,
     selectedCoupon,
@@ -51,9 +52,8 @@ const App = () => {
     applyCoupon: applyCouponBase,
     setSelectedCoupon,
     completeOrder: completeOrderBase,
-  } = useCart();
+  } = useCart(addNotification);
 
-  // useCoupons 훅 사용
   const {
     coupons,
     showCouponForm,
@@ -65,10 +65,6 @@ const App = () => {
     setCouponForm,
   } = useCoupons();
 
-  const [isAdmin, setIsAdmin] = useState(false);
-  const { notifications, addNotification, removeNotification } =
-    useNotifications();
-
   const { searchTerm, setSearchTerm, debouncedSearchTerm, filteredProducts } =
     useSearch(products);
 
@@ -77,14 +73,6 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem("products", JSON.stringify(products));
   }, [products]);
-
-  // useCoupons의 함수들을 addNotification과 함께 사용하도록 래핑
-  const addToCart = useCallback(
-    (product: ProductWithUI) => {
-      addToCartBase(product, addNotification);
-    },
-    [addToCartBase, addNotification]
-  );
 
   const updateQuantity = useCallback(
     (productId: string, newQuantity: number) => {
@@ -179,7 +167,7 @@ const App = () => {
               filteredProducts={filteredProducts}
               debouncedSearchTerm={debouncedSearchTerm}
               getRemainingStock={getRemainingStock}
-              onAddToCart={addToCart}
+              onAddToCart={addToCartBase}
               formatPrice={formatPrice}
             />
 
