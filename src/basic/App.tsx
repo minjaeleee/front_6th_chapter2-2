@@ -34,6 +34,7 @@ const App = () => {
     setEditingProduct,
     setShowProductForm,
     setProductForm,
+    handleProductSubmit,
   } = useProducts();
 
   // useCart 훅 사용
@@ -122,28 +123,6 @@ const App = () => {
     [deleteCouponBase, selectedCoupon, setSelectedCoupon, addNotification]
   );
 
-  const handleProductSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editingProduct && editingProduct !== "new") {
-      updateProduct(editingProduct, productForm);
-      setEditingProduct(null);
-    } else {
-      addProduct({
-        ...productForm,
-        discounts: productForm.discounts,
-      });
-    }
-    setProductForm({
-      name: "",
-      price: 0,
-      stock: 0,
-      description: "",
-      discounts: [],
-    });
-    setEditingProduct(null);
-    setShowProductForm(false);
-  };
-
   const handleCouponSubmit = useCallback(
     (e: React.FormEvent) => {
       handleCouponSubmitBase(e, addNotification);
@@ -190,6 +169,7 @@ const App = () => {
             setShowCouponForm={setShowCouponForm}
             setCouponForm={setCouponForm}
             formatPrice={formatPrice}
+            handleProductSubmit={handleProductSubmit}
             addNotification={addNotification}
           />
         ) : (

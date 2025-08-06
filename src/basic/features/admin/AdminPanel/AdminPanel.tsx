@@ -65,6 +65,7 @@ interface AdminPanelProps {
 
   // 기타
   formatPrice: (price: number, productId?: string) => string;
+  handleProductSubmit: (e: React.FormEvent) => void;
   addNotification: (
     message: string,
     type?: "success" | "error" | "warning"
@@ -76,8 +77,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   editingProduct,
   showProductForm,
   productForm,
-  addProduct,
-  updateProduct,
   deleteProduct,
   startEditProduct,
   setEditingProduct,
@@ -86,39 +85,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   coupons,
   showCouponForm,
   couponForm,
-  addCoupon,
   deleteCoupon,
   handleCouponSubmit,
   setShowCouponForm,
   setCouponForm,
   formatPrice,
+  handleProductSubmit,
   addNotification,
 }) => {
   const [activeTab, setActiveTab] = useState<"products" | "coupons">(
     "products"
   );
-
-  const handleProductSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editingProduct && editingProduct !== "new") {
-      updateProduct(editingProduct, productForm);
-      setEditingProduct(null);
-    } else {
-      addProduct({
-        ...productForm,
-        discounts: productForm.discounts,
-      });
-    }
-    setProductForm({
-      name: "",
-      price: 0,
-      stock: 0,
-      description: "",
-      discounts: [],
-    });
-    setEditingProduct(null);
-    setShowProductForm(false);
-  };
 
   return (
     <div className="max-w-6xl mx-auto">
