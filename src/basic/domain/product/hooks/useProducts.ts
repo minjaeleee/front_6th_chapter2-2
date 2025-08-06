@@ -121,6 +121,32 @@ export const useProducts = () => {
     setShowProductForm(false);
   }, []);
 
+  // 상품 폼 제출 처리
+  const handleProductSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (editingProduct && editingProduct !== "new") {
+        updateProduct(editingProduct, productForm);
+        setEditingProduct(null);
+      } else {
+        addProduct({
+          ...productForm,
+          discounts: productForm.discounts,
+        });
+      }
+      setProductForm({
+        name: "",
+        price: 0,
+        stock: 0,
+        description: "",
+        discounts: [],
+      });
+      setEditingProduct(null);
+      setShowProductForm(false);
+    },
+    [editingProduct, productForm, updateProduct, addProduct]
+  );
+
   return {
     products,
     editingProduct,
@@ -134,6 +160,7 @@ export const useProducts = () => {
     deleteProduct,
     startEditProduct,
     resetProductForm,
+    handleProductSubmit,
     addDiscount,
     removeDiscount,
     updateDiscount,
