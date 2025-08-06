@@ -7,7 +7,9 @@ export const useCoupons = (
   addNotification?: (
     message: string,
     type?: "success" | "error" | "warning"
-  ) => void
+  ) => void,
+  selectedCoupon?: Coupon | null,
+  setSelectedCoupon?: (coupon: Coupon | null) => void
 ) => {
   const [coupons, setCoupons] = useState<Coupon[]>(() => {
     const saved = localStorage.getItem("coupons");
@@ -55,11 +57,7 @@ export const useCoupons = (
   );
 
   const deleteCoupon = useCallback(
-    (
-      couponCode: string,
-      selectedCoupon?: Coupon | null,
-      setSelectedCoupon?: (coupon: Coupon | null) => void
-    ) => {
+    (couponCode: string) => {
       setCoupons((prev) => prev.filter((coupon) => coupon.code !== couponCode));
 
       // 삭제된 쿠폰이 현재 선택된 쿠폰이라면 선택 해제
@@ -69,7 +67,7 @@ export const useCoupons = (
 
       addNotification?.("쿠폰이 삭제되었습니다.", "success");
     },
-    [addNotification]
+    [addNotification, selectedCoupon, setSelectedCoupon]
   );
 
   // 쿠폰 폼 제출 처리

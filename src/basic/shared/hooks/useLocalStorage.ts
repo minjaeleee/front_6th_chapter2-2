@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 export const useLocalStorage = <T>(key: string, initialValue: T) => {
-  // 초기값을 로컬스토리지에서 가져오거나 기본값 사용
+  // 초기값을 로컬스토리지에서 가져오거나 기본값 사용asdf
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = localStorage.getItem(key);

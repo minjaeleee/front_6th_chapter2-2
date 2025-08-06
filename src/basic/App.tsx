@@ -46,24 +46,24 @@ const App = () => {
     getRemainingStock,
     calculateItemTotal,
     calculateCartTotal,
-    addToCart: addToCartBase,
+    addToCart,
     removeFromCart,
-    updateQuantity: updateQuantityBase,
-    applyCoupon: applyCouponBase,
+    updateQuantity,
+    applyCoupon,
     setSelectedCoupon,
-    completeOrder: completeOrderBase,
-  } = useCart(addNotification);
+    completeOrder,
+  } = useCart(addNotification, products);
 
   const {
     coupons,
     showCouponForm,
     couponForm,
-    addCoupon: addCouponBase,
-    deleteCoupon: deleteCouponBase,
-    handleCouponSubmit: handleCouponSubmitBase,
+    addCoupon,
+    deleteCoupon,
+    handleCouponSubmit,
     setShowCouponForm,
     setCouponForm,
-  } = useCoupons(addNotification);
+  } = useCoupons(addNotification, selectedCoupon, setSelectedCoupon);
 
   const { searchTerm, setSearchTerm, debouncedSearchTerm, filteredProducts } =
     useSearch(products);
@@ -73,38 +73,6 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem("products", JSON.stringify(products));
   }, [products]);
-
-  const updateQuantity = useCallback(
-    (productId: string, newQuantity: number) => {
-      updateQuantityBase(productId, newQuantity, products, addNotification);
-    },
-    [updateQuantityBase, products, addNotification]
-  );
-
-  const applyCoupon = useCallback(
-    (coupon: Coupon) => {
-      applyCouponBase(coupon, addNotification);
-    },
-    [applyCouponBase, addNotification]
-  );
-
-  const completeOrder = useCallback(() => {
-    completeOrderBase(addNotification);
-  }, [completeOrderBase, addNotification]);
-
-  const addCoupon = useCallback(
-    (newCoupon: Coupon) => {
-      addCouponBase(newCoupon);
-    },
-    [addCouponBase]
-  );
-
-  const deleteCoupon = useCallback(
-    (couponCode: string) => {
-      deleteCouponBase(couponCode, selectedCoupon, setSelectedCoupon);
-    },
-    [deleteCouponBase, selectedCoupon, setSelectedCoupon]
-  );
 
   const totals = calculateCartTotal();
 
@@ -141,7 +109,7 @@ const App = () => {
             couponForm={couponForm}
             addCoupon={addCoupon}
             deleteCoupon={deleteCoupon}
-            handleCouponSubmit={handleCouponSubmitBase}
+            handleCouponSubmit={handleCouponSubmit}
             setShowCouponForm={setShowCouponForm}
             setCouponForm={setCouponForm}
             formatPrice={formatPrice}
@@ -155,7 +123,7 @@ const App = () => {
               filteredProducts={filteredProducts}
               debouncedSearchTerm={debouncedSearchTerm}
               getRemainingStock={getRemainingStock}
-              onAddToCart={addToCartBase}
+              onAddToCart={addToCart}
               formatPrice={formatPrice}
             />
 
