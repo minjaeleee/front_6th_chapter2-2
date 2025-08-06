@@ -63,7 +63,7 @@ const App = () => {
     handleCouponSubmit: handleCouponSubmitBase,
     setShowCouponForm,
     setCouponForm,
-  } = useCoupons();
+  } = useCoupons(addNotification);
 
   const { searchTerm, setSearchTerm, debouncedSearchTerm, filteredProducts } =
     useSearch(products);
@@ -111,13 +111,6 @@ const App = () => {
     [deleteCouponBase, selectedCoupon, setSelectedCoupon, addNotification]
   );
 
-  const handleCouponSubmit = useCallback(
-    (e: React.FormEvent) => {
-      handleCouponSubmitBase(e, addNotification);
-    },
-    [handleCouponSubmitBase, addNotification]
-  );
-
   const totals = calculateCartTotal();
 
   return (
@@ -153,7 +146,7 @@ const App = () => {
             couponForm={couponForm}
             addCoupon={addCoupon}
             deleteCoupon={deleteCoupon}
-            handleCouponSubmit={handleCouponSubmit}
+            handleCouponSubmit={handleCouponSubmitBase}
             setShowCouponForm={setShowCouponForm}
             setCouponForm={setCouponForm}
             formatPrice={formatPrice}
