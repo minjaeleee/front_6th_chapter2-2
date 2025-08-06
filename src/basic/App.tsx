@@ -2,14 +2,10 @@ import { useState, useCallback, useEffect } from "react";
 // models
 import { ProductWithUI } from "./domain/product/models";
 import { Coupon } from "./domain/coupon/models";
-import {
-  formatUserPrice,
-  formatAdminPrice,
-  SOLD_OUT_TEXT,
-} from "./shared/utils";
+// 더 이상 직접 사용하지 않음 - useFormatPrice hook에서 사용
 
 // Shared hooks
-import { useSearch } from "./shared/hooks";
+import { useSearch, useFormatPrice } from "./shared/hooks";
 // Domain hooks
 import { useProducts } from "./domain/product/hooks";
 import { useCart } from "./domain/cart/hooks";
@@ -75,20 +71,7 @@ const App = () => {
   const { searchTerm, setSearchTerm, debouncedSearchTerm, filteredProducts } =
     useSearch(products);
 
-  const formatPrice = (price: number, productId?: string): string => {
-    if (productId) {
-      const product = products.find((p: ProductWithUI) => p.id === productId);
-      if (product && getRemainingStock(product) <= 0) {
-        return SOLD_OUT_TEXT;
-      }
-    }
-
-    if (isAdmin) {
-      return formatAdminPrice(price);
-    }
-
-    return formatUserPrice(price);
-  };
+  const { formatPrice } = useFormatPrice(products, isAdmin, getRemainingStock);
 
   useEffect(() => {
     localStorage.setItem("products", JSON.stringify(products));
