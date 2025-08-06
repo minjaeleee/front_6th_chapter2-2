@@ -2,7 +2,12 @@ import { useState, useCallback, useEffect } from "react";
 import { Coupon } from "../models";
 import { initialCoupons } from "../constants";
 
-export const useCoupons = () => {
+export const useCoupons = (
+  addNotification?: (
+    message: string,
+    type?: "success" | "error" | "warning"
+  ) => void
+) => {
   const [coupons, setCoupons] = useState<Coupon[]>(() => {
     const saved = localStorage.getItem("coupons");
     if (saved) {
@@ -98,17 +103,11 @@ export const useCoupons = () => {
 
   // 쿠폰 폼 제출 처리
   const handleCouponSubmit = useCallback(
-    (
-      e: React.FormEvent,
-      addNotification: (
-        message: string,
-        type?: "success" | "error" | "warning"
-      ) => void
-    ) => {
+    (e: React.FormEvent) => {
       e.preventDefault();
       const existingCoupon = coupons.find((c) => c.code === couponForm.code);
       if (existingCoupon) {
-        addNotification("이미 존재하는 쿠폰 코드입니다.", "error");
+        addNotification?.("이미 존재하는 쿠폰 코드입니다.", "error");
         return;
       }
 
@@ -122,7 +121,7 @@ export const useCoupons = () => {
       };
 
       setCoupons((prev) => [...prev, newCoupon]);
-      addNotification("쿠폰이 추가되었습니다.", "success");
+      addNotification?.("쿠폰이 추가되었습니다.", "success");
       setCouponForm({
         name: "",
         code: "",
@@ -131,7 +130,7 @@ export const useCoupons = () => {
       });
       setShowCouponForm(false);
     },
-    [coupons, couponForm]
+    [coupons, couponForm, addNotification]
   );
 
   // 쿠폰 폼 리셋
