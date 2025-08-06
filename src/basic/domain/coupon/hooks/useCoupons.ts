@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Coupon } from "../models";
 import { initialCoupons } from "../constants";
+import { generateCouponCode } from "../utils";
 
 export const useCoupons = (
   addNotification?: (
@@ -38,7 +39,7 @@ export const useCoupons = (
     (newCoupon: Omit<Coupon, "code">) => {
       const coupon: Coupon = {
         ...newCoupon,
-        code: newCoupon.name.replace(/\s+/g, "").toUpperCase() + Date.now(),
+        code: generateCouponCode(newCoupon.name),
       };
       setCoupons((prev) => [...prev, coupon]);
       addNotification?.("쿠폰이 추가되었습니다.", "success");
@@ -71,52 +72,6 @@ export const useCoupons = (
     [addNotification]
   );
 
-  // 쿠폰 검증
-  const validateCoupon = useCallback(
-    (couponCode: string): Coupon | null => {
-      const coupon = coupons.find((c) => c.code === couponCode);
-      return coupon || null;
-    },
-    [coupons]
-  );
-
-  // 쿠폰 적용 가능 여부 확인
-  const canApplyCoupon = useCallback(
-    (couponCode: string, cartTotal: number): boolean => {
-      const coupon = validateCoupon(couponCode);
-      if (!coupon) return false;
-
-      // percentage 쿠폰은 10,000원 이상 구매 시에만 사용 가능
-      if (coupon.discountType === "percentage" && cartTotal < 10000) {
-        return false;
-      }
-
-      return true;
-    },
-    [validateCoupon]
-  );
-
-  // 할인 금액 계산
-  const calculateDiscount = useCallback(
-    (coupon: Coupon, cartTotal: number): number => {
-      if (coupon.discountType === "amount") {
-        return Math.min(coupon.discountValue, cartTotal);
-      } else {
-        return Math.round(cartTotal * (coupon.discountValue / 100));
-      }
-    },
-    []
-  );
-
-  // 최종 금액 계산
-  const calculateFinalAmount = useCallback(
-    (coupon: Coupon, cartTotal: number): number => {
-      const discount = calculateDiscount(coupon, cartTotal);
-      return Math.max(0, cartTotal - discount);
-    },
-    [calculateDiscount]
-  );
-
   // 쿠폰 폼 제출 처리
   const handleCouponSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -129,9 +84,7 @@ export const useCoupons = (
 
       const newCoupon: Coupon = {
         name: couponForm.name,
-        code:
-          couponForm.code ||
-          couponForm.name.replace(/\s+/g, "").toUpperCase() + Date.now(),
+        code: couponForm.code || generateCouponCode(couponForm.name),
         discountType: couponForm.discountType,
         discountValue: couponForm.discountValue,
       };
@@ -174,10 +127,6 @@ export const useCoupons = (
     // 액션 함수들
     addCoupon,
     deleteCoupon,
-    validateCoupon,
-    canApplyCoupon,
-    calculateDiscount,
-    calculateFinalAmount,
     handleCouponSubmit,
     resetCouponForm,
   };
