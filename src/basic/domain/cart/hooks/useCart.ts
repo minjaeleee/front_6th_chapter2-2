@@ -6,7 +6,6 @@ import {
   getRemainingStock,
   calculateItemTotal,
   calculateCartTotal,
-  getMaxApplicableDiscount,
 } from "../utils";
 
 export const useCart = (
@@ -49,14 +48,6 @@ export const useCart = (
   const getRemainingStockForProduct = useCallback(
     (product: Product): number => {
       return getRemainingStock(product, cart);
-    },
-    [cart]
-  );
-
-  // 아이템별 최대 할인율 계산 (순수 함수 사용)
-  const getMaxApplicableDiscountForItem = useCallback(
-    (item: CartItem): number => {
-      return getMaxApplicableDiscount(item, cart);
     },
     [cart]
   );
@@ -212,7 +203,6 @@ export const useCart = (
 
     // 계산 함수들
     getRemainingStock: getRemainingStockForProduct,
-    getMaxApplicableDiscount: getMaxApplicableDiscountForItem,
     calculateItemTotal: calculateItemTotalForItem,
     calculateCartTotal: calculateCartTotalForCart,
 
