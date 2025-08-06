@@ -12,7 +12,12 @@ import {
   calculateRemainingStock,
 } from "../../product/utils";
 
-export const useCart = () => {
+export const useCart = (
+  addNotification?: (
+    message: string,
+    type?: "success" | "error" | "warning"
+  ) => void
+) => {
   const [cart, setCart] = useState<CartItem[]>(() => {
     const saved = localStorage.getItem("cart");
     if (saved) {
@@ -113,16 +118,10 @@ export const useCart = () => {
 
   // 장바구니에 상품 추가
   const addToCart = useCallback(
-    (
-      product: ProductWithUI,
-      addNotification: (
-        message: string,
-        type?: "success" | "error" | "warning"
-      ) => void
-    ) => {
+    (product: ProductWithUI) => {
       const remainingStock = getRemainingStock(product);
       if (remainingStock <= 0) {
-        addNotification("재고가 부족합니다!", "error");
+        addNotification?.("재고가 부족합니다!", "error");
         return;
       }
 
@@ -135,7 +134,7 @@ export const useCart = () => {
           const newQuantity = existingItem.quantity + 1;
 
           if (newQuantity > product.stock) {
-            addNotification(
+            addNotification?.(
               `재고는 ${product.stock}개까지만 있습니다.`,
               "error"
             );
@@ -152,9 +151,9 @@ export const useCart = () => {
         return [...prevCart, { product, quantity: 1 }];
       });
 
-      addNotification("장바구니에 담았습니다", "success");
+      addNotification?.("장바구니에 담았습니다", "success");
     },
-    [getRemainingStock]
+    [getRemainingStock, addNotification]
   );
 
   // 장바구니에서 상품 제거
