@@ -8,3 +8,5 @@ export {
   calculateItemTotal,
   calculateCartTotal,
 } from "./calculations";
+
+export * from "./displayUtils";

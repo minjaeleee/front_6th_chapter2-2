@@ -1,6 +1,7 @@
 import React from "react";
 import { CartItem } from "../../models";
 import { Coupon } from "../../../coupon/models";
+import { calculateItemDisplayInfo } from "../../utils";
 
 interface CartSidebarProps {
   cart: CartItem[];
@@ -71,11 +72,10 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({
             <div className="space-y-3">
               {cart.map((item) => {
                 const itemTotal = calculateItemTotal(item);
-                const originalPrice = item.product.price * item.quantity;
-                const hasDiscount = itemTotal < originalPrice;
-                const discountRate = hasDiscount
-                  ? Math.round((1 - itemTotal / originalPrice) * 100)
-                  : 0;
+                const { hasDiscount, discountRate } = calculateItemDisplayInfo(
+                  item,
+                  itemTotal
+                );
 
                 return (
                   <div
