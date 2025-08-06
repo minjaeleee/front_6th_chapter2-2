@@ -1,42 +1,27 @@
 import { useState, useCallback, useEffect } from "react";
-// Domain models
-import { Product, ProductWithUI } from "./domain/product/models";
-import { CartItem } from "./domain/cart/models";
+// models
+import { ProductWithUI } from "./domain/product/models";
 import { Coupon } from "./domain/coupon/models";
-import { Notification } from "./domain/notification/models";
-// Shared utilities
 import {
   formatUserPrice,
   formatAdminPrice,
   SOLD_OUT_TEXT,
 } from "./shared/utils";
 
-// Domain utilities
-import {
-  calculateProductDiscount,
-  calculateRemainingStock,
-} from "./domain/product/utils";
-import {
-  applyBulkDiscount,
-  calculateItemPrice,
-  hasBulkPurchase,
-} from "./domain/cart/utils";
 // Shared hooks
-import { useLocalStorage, useSearch } from "./shared/hooks";
-
+import { useSearch } from "./shared/hooks";
 // Domain hooks
 import { useProducts } from "./domain/product/hooks";
 import { useCart } from "./domain/cart/hooks";
 import { useCoupons } from "./domain/coupon/hooks";
 import { useNotifications } from "./domain/notification/hooks";
-// Shared components
-import { Header, SearchInput } from "./shared/components";
 
+// Shared components
+import { Header } from "./shared/components";
 // Domain components
-import { ProductCard, ProductList } from "./domain/product/components";
+import { ProductList } from "./domain/product/components";
 import { CartSidebar } from "./domain/cart/components";
 import { NotificationToast } from "./domain/notification/components";
-
 // Feature components
 import { AdminPanel } from "./features/admin";
 
@@ -50,7 +35,6 @@ const App = () => {
     updateProduct,
     deleteProduct,
     startEditProduct,
-    resetProductForm,
     setEditingProduct,
     setShowProductForm,
     setProductForm,
@@ -80,8 +64,6 @@ const App = () => {
     addCoupon: addCouponBase,
     deleteCoupon: deleteCouponBase,
     handleCouponSubmit: handleCouponSubmitBase,
-    resetCouponForm,
-    setCoupons,
     setShowCouponForm,
     setCouponForm,
   } = useCoupons();
@@ -89,9 +71,6 @@ const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const { notifications, addNotification, removeNotification } =
     useNotifications();
-  const [activeTab, setActiveTab] = useState<"products" | "coupons">(
-    "products"
-  );
 
   const { searchTerm, setSearchTerm, debouncedSearchTerm, filteredProducts } =
     useSearch(products);
