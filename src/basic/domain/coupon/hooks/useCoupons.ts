@@ -34,26 +34,42 @@ export const useCoupons = (
     localStorage.setItem("coupons", JSON.stringify(coupons));
   }, [coupons]);
 
-  // 쿠폰 추가
-  const addCoupon = useCallback((newCoupon: Omit<Coupon, "code">) => {
-    const coupon: Coupon = {
-      ...newCoupon,
-      code: newCoupon.name.replace(/\s+/g, "").toUpperCase() + Date.now(),
-    };
-    setCoupons((prev) => [...prev, coupon]);
-    setShowCouponForm(false);
-    setCouponForm({
-      name: "",
-      code: "",
-      discountType: "percentage",
-      discountValue: 0,
-    });
-  }, []);
+  const addCoupon = useCallback(
+    (newCoupon: Omit<Coupon, "code">) => {
+      const coupon: Coupon = {
+        ...newCoupon,
+        code: newCoupon.name.replace(/\s+/g, "").toUpperCase() + Date.now(),
+      };
+      setCoupons((prev) => [...prev, coupon]);
+      addNotification?.("쿠폰이 추가되었습니다.", "success");
+      setShowCouponForm(false);
+      setCouponForm({
+        name: "",
+        code: "",
+        discountType: "percentage",
+        discountValue: 0,
+      });
+    },
+    [addNotification]
+  );
 
-  // 쿠폰 삭제
-  const deleteCoupon = useCallback((couponCode: string) => {
-    setCoupons((prev) => prev.filter((coupon) => coupon.code !== couponCode));
-  }, []);
+  const deleteCoupon = useCallback(
+    (
+      couponCode: string,
+      selectedCoupon?: Coupon | null,
+      setSelectedCoupon?: (coupon: Coupon | null) => void
+    ) => {
+      setCoupons((prev) => prev.filter((coupon) => coupon.code !== couponCode));
+
+      // 삭제된 쿠폰이 현재 선택된 쿠폰이라면 선택 해제
+      if (selectedCoupon?.code === couponCode && setSelectedCoupon) {
+        setSelectedCoupon(null);
+      }
+
+      addNotification?.("쿠폰이 삭제되었습니다.", "success");
+    },
+    [addNotification]
+  );
 
   // 쿠폰 검증
   const validateCoupon = useCallback(

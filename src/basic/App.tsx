@@ -94,21 +94,16 @@ const App = () => {
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {
-      addCouponBase(newCoupon, addNotification);
+      addCouponBase(newCoupon);
     },
-    [addCouponBase, addNotification]
+    [addCouponBase]
   );
 
   const deleteCoupon = useCallback(
     (couponCode: string) => {
-      deleteCouponBase(
-        couponCode,
-        selectedCoupon,
-        setSelectedCoupon,
-        addNotification
-      );
+      deleteCouponBase(couponCode, selectedCoupon, setSelectedCoupon);
     },
-    [deleteCouponBase, selectedCoupon, setSelectedCoupon, addNotification]
+    [deleteCouponBase, selectedCoupon, setSelectedCoupon]
   );
 
   const totals = calculateCartTotal();
