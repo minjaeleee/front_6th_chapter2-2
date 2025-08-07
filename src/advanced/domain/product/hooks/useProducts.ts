@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
+import { useAtom } from "jotai";
 import { ProductWithUI } from "../models";
 import { useLocalStorage } from "../../../shared/hooks";
 import { initialProducts } from "../constants";
@@ -7,20 +8,17 @@ import {
   updateProductInList,
   removeProductFromList,
 } from "../utils";
+import {
+  editingProductAtom,
+  showProductFormAtom,
+  productFormAtom,
+} from "../atoms";
 
 export const useProducts = () => {
   const [products, setProducts] = useLocalStorage("products", initialProducts);
-
-  // 상품 폼 관련 상태
-  const [editingProduct, setEditingProduct] = useState<string | null>(null);
-  const [showProductForm, setShowProductForm] = useState(false);
-  const [productForm, setProductForm] = useState({
-    name: "",
-    price: 0,
-    stock: 0,
-    description: "",
-    discounts: [] as Array<{ quantity: number; rate: number }>,
-  });
+  const [editingProduct, setEditingProduct] = useAtom(editingProductAtom);
+  const [showProductForm, setShowProductForm] = useAtom(showProductFormAtom);
+  const [productForm, setProductForm] = useAtom(productFormAtom);
 
   // 상품 추가
   const addProduct = useCallback(
@@ -40,7 +38,7 @@ export const useProducts = () => {
         discounts: [],
       });
     },
-    [setProducts]
+    [setProducts, setShowProductForm, setProductForm]
   );
 
   // 상품 수정
@@ -57,7 +55,7 @@ export const useProducts = () => {
         discounts: [],
       });
     },
-    [setProducts]
+    [setProducts, setEditingProduct, setShowProductForm, setProductForm]
   );
 
   // 상품 삭제
@@ -69,17 +67,20 @@ export const useProducts = () => {
   );
 
   // 상품 편집 시작
-  const startEditProduct = useCallback((product: ProductWithUI) => {
-    setEditingProduct(product.id);
-    setProductForm({
-      name: product.name,
-      price: product.price,
-      stock: product.stock,
-      description: product.description || "",
-      discounts: product.discounts || [],
-    });
-    setShowProductForm(true);
-  }, []);
+  const startEditProduct = useCallback(
+    (product: ProductWithUI) => {
+      setEditingProduct(product.id);
+      setProductForm({
+        name: product.name,
+        price: product.price,
+        stock: product.stock,
+        description: product.description || "",
+        discounts: product.discounts || [],
+      });
+      setShowProductForm(true);
+    },
+    [setEditingProduct, setProductForm, setShowProductForm]
+  );
 
   // 상품 폼 제출 처리
   const handleProductSubmit = useCallback(
@@ -104,7 +105,15 @@ export const useProducts = () => {
       setEditingProduct(null);
       setShowProductForm(false);
     },
-    [editingProduct, productForm, updateProduct, addProduct]
+    [
+      editingProduct,
+      productForm,
+      updateProduct,
+      addProduct,
+      setEditingProduct,
+      setShowProductForm,
+      setProductForm,
+    ]
   );
 
   return {
