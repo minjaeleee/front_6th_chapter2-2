@@ -30,7 +30,7 @@ export const useCart = (
   });
 
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
-  const [setTotalItemCount] = useAtom(totalItemCountAtom);
+  const [totalItemCount, setTotalItemCount] = useAtom(totalItemCountAtom);
 
   // localStorage 동기화
   useEffect(() => {
