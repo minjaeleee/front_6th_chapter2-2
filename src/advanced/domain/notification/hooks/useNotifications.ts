@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
-import { Notification } from "../models";
+import { useCallback } from "react";
+import { useAtom } from "jotai";
+import { notificationsAtom } from "../atoms";
 
 export const useNotifications = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useAtom(notificationsAtom);
 
   const addNotification = useCallback(
     (message: string, type: "error" | "success" | "warning" = "success") => {

@@ -36,8 +36,7 @@ const App = () => {
   } = useProducts();
 
   const [isAdmin, setIsAdmin] = useState(false);
-  const { notifications, addNotification, removeNotification } =
-    useNotifications();
+  const { addNotification } = useNotifications();
 
   const {
     cart,
@@ -78,10 +77,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NotificationToast
-        notifications={notifications}
-        onRemove={removeNotification}
-      />
+      <NotificationToast />
       <Header
         isAdmin={isAdmin}
         onToggleAdmin={() => setIsAdmin(!isAdmin)}

@@ -1,15 +1,14 @@
 import React from "react";
-import { Notification } from "../models";
+import { useAtom } from "jotai";
+import { notificationsAtom } from "../atoms";
 
-interface NotificationToastProps {
-  notifications: Notification[];
-  onRemove: (id: string) => void;
-}
+export const NotificationToast: React.FC = () => {
+  const [notifications, setNotifications] = useAtom(notificationsAtom);
 
-export const NotificationToast: React.FC<NotificationToastProps> = ({
-  notifications,
-  onRemove,
-}) => {
+  const onRemove = (id: string) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
   if (notifications.length === 0) return null;
 
   return (
