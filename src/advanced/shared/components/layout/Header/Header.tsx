@@ -1,21 +1,17 @@
-import React from "react";
 import { SearchInput } from "../../form";
+import { useAtom } from "jotai";
+import { isAdminAtom, searchTermAtom } from "../../../atoms";
+import { totalItemCountAtom } from "../../../../domain/cart/atoms";
 
-interface HeaderProps {
-  isAdmin: boolean;
-  onToggleAdmin: () => void;
-  searchTerm: string;
-  onSearchChange: (value: string) => void;
-  cartItemCount: number;
-}
+export const Header = () => {
+  const [isAdmin, setIsAdmin] = useAtom(isAdminAtom);
+  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
+  const [totalItemCount] = useAtom(totalItemCountAtom);
 
-export const Header: React.FC<HeaderProps> = ({
-  isAdmin,
-  onToggleAdmin,
-  searchTerm,
-  onSearchChange,
-  cartItemCount,
-}) => {
+  const onToggleAdmin = () => {
+    setIsAdmin(!isAdmin);
+  };
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-40 border-b">
       <div className="max-w-7xl mx-auto px-4">
@@ -25,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
             {!isAdmin && (
               <SearchInput
                 value={searchTerm}
-                onChange={onSearchChange}
+                onChange={setSearchTerm}
                 placeholder="상품 검색..."
               />
             )}
@@ -56,9 +52,9 @@ export const Header: React.FC<HeaderProps> = ({
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                {cartItemCount > 0 && (
+                {totalItemCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartItemCount}
+                    {totalItemCount}
                   </span>
                 )}
               </div>

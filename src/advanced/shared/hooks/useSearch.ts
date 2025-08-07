@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { ProductWithUI } from "../models";
+import { useAtom } from "jotai";
+import { ProductWithUI } from "../../domain/product/models";
+import { searchTermAtom } from "../atoms";
 
 export const useSearch = (products: ProductWithUI[], debounceDelay = 500) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm] = useAtom(searchTermAtom);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
   // 디바운싱 처리
@@ -36,8 +38,6 @@ export const useSearch = (products: ProductWithUI[], debounceDelay = 500) => {
   }, [products, debouncedSearchTerm]);
 
   return {
-    searchTerm,
-    setSearchTerm,
     debouncedSearchTerm,
     filteredProducts,
   };

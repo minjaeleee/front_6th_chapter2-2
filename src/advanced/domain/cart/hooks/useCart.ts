@@ -7,6 +7,8 @@ import {
   calculateItemTotal,
   calculateCartTotal,
 } from "../utils";
+import { useAtom } from "jotai";
+import { totalItemCountAtom } from "../atoms";
 
 export const useCart = (
   addNotification?: (
@@ -28,7 +30,7 @@ export const useCart = (
   });
 
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
-  const [totalItemCount, setTotalItemCount] = useState(0);
+  const [setTotalItemCount] = useAtom(totalItemCountAtom);
 
   // localStorage 동기화
   useEffect(() => {
@@ -178,7 +180,6 @@ export const useCart = (
     // 상태
     cart,
     selectedCoupon,
-    totalItemCount,
 
     // 계산 함수들
     getRemainingStock: getRemainingStockForProduct,

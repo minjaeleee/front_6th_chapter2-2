@@ -1,6 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
-// models
-import { Coupon } from "./domain/coupon/models";
+import { useEffect } from "react";
+import { useAtom } from "jotai";
 
 // Shared hooks
 import { useSearch, useFormatPrice } from "./shared/hooks";
@@ -19,6 +18,8 @@ import { NotificationToast } from "./domain/notification/components";
 // Feature components
 import { AdminPanel } from "./features/admin";
 
+import { isAdminAtom } from "./shared/atoms";
+
 const App = () => {
   const {
     products,
@@ -35,13 +36,12 @@ const App = () => {
     handleProductSubmit,
   } = useProducts();
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin] = useAtom(isAdminAtom);
   const { addNotification } = useNotifications();
 
   const {
     cart,
     selectedCoupon,
-    totalItemCount,
     getRemainingStock,
     calculateItemTotal,
     calculateCartTotal,
@@ -64,8 +64,7 @@ const App = () => {
     setCouponForm,
   } = useCoupons(addNotification, selectedCoupon, setSelectedCoupon);
 
-  const { searchTerm, setSearchTerm, debouncedSearchTerm, filteredProducts } =
-    useSearch(products);
+  const { debouncedSearchTerm, filteredProducts } = useSearch(products);
 
   const { formatPrice } = useFormatPrice(products, isAdmin, getRemainingStock);
 
@@ -78,13 +77,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <NotificationToast />
-      <Header
-        isAdmin={isAdmin}
-        onToggleAdmin={() => setIsAdmin(!isAdmin)}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        cartItemCount={totalItemCount}
-      />
+      <Header />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {isAdmin ? (
