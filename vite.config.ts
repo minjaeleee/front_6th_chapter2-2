@@ -8,7 +8,7 @@ export default mergeConfig(
     build: {
       rollupOptions: {
         input: {
-          index: "index.html",
+          index: "index.advanced.html",
         },
       },
     },
